@@ -1,0 +1,29 @@
+CXX=clang++
+
+CXXFLAGS = -Wall
+LDLIBS = -lgtest
+
+all: test $(EXEC)
+
+.PHONY : test clean
+
+test: $(TEST)
+	./$<
+
+depend: .depend
+
+.depend: $(TEST_SRC:=.cpp) $(MAIN_SRC:=.cpp)
+	rm -f ./.depend
+	$(CXX) $(CPPFLAGS) -MM $^>>./.depend;
+
+$(TEST): $(TEST_SRC:=.o)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
+
+$(EXEC): $(MAIN_SRC:=.o)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
+
+clean:
+	$(RM) -rf $(TEST) $(EXEC) *.o .depend
+
+-include .depend
+
