@@ -11,7 +11,8 @@
 #include <ostream>
 #include <stdexcept>
 
-namespace data_structures { namespace trees {
+namespace data_structures {
+namespace trees {
 
 template<typename T>
 class binary_search_tree {
@@ -21,13 +22,15 @@ class binary_search_tree {
 		}
 
 		friend std::ostream& operator<<(std::ostream& out, const node& node) {
+			out << '(';
 			if (node._left) {
-				out << *(node._left) << ' ';
+				out << *(node._left) << ',';
 			}
 			out << node._item;
 			if (node._right) {
-				out << ' ' << *(node._right);
+				out << ',' << *(node._right);
 			}
+			out << ')';
 			return out;
 		}
 
@@ -44,6 +47,18 @@ class binary_search_tree {
 		return curr;
 	}
 
+	node* find(node*& root, const T& item) {
+		if (!root)
+			return nullptr;
+		if (item < root->_item)
+			return find(root->_left, item);
+		if (item > root->_item)
+			return find(root->_right, item);
+		if (item == root->_item)
+			return root;
+		throw std::out_of_range("Searching non-existent element.");
+	}
+
 	void insert(node*& root, const T& item) {
 		if (!root) {
 			root = new node(item);
@@ -53,7 +68,7 @@ class binary_search_tree {
 			} else if (item > root->_item) {
 				insert(root->_right, item);
 			} else {
-				throw std::exception("Inserting element already existent.");
+				throw std::exception();
 			}
 		}
 	}
@@ -94,6 +109,10 @@ public:
 		return root == 0;
 	}
 
+	bool find(const T& item) {
+		return find(root, item) != nullptr;
+	}
+
 	void pop(const T& item) {
 		remove(root, item);
 	}
@@ -104,17 +123,21 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& out,
 			const binary_search_tree& bst) {
+		out << '(';
 		if (bst.root->_left) {
-			out << *(bst.root->_left) << ' ';
+			out << *(bst.root->_left) << ',';
 		}
 		out << bst.root->item;
 		if (bst.root->_right) {
-			out << ' ' << *(bst.root->_right);
+			out << ',' << *(bst.root->_right);
 		}
+		out << ')';
 		return out;
 	}
-};
+}
+;
 
-}}
+}
+}
 
 #endif /* BINARY_SEARCH_TREE_H_ */
