@@ -15,4 +15,7 @@ public:
 	binary_search_tree<int> tree;
 };
 
-//TEST_F(binary_search_tree_test, )
+TEST_F(binary_search_tree_test, pushPushes) {
+	tree.push(42);
+	tree.find(42);
+}
