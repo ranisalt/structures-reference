@@ -183,6 +183,8 @@ public:
 		++this->_size;
 	}
 
+	using iterator = iterator_base<T>;
+
 	iterator begin() {
 		return {_head};
 	}
@@ -190,6 +192,8 @@ public:
 	iterator end() {
 		return {0};
 	}
+
+	using const_iterator = iterator_base<const T>;
 
 	const_iterator begin() const {
 		return {_head};
