@@ -110,23 +110,3 @@ TEST_F(singly_linked_list_test, forwardIteratorAdvance) {
 	++it;
 	EXPECT_EQ(13, *it);
 }
-
-/*TEST_F(singly_linked_list_test, backwardIteratorIsCreatedCorrect) {
-	list.push_back(42);
-	list.push_back(1963);
-	list.push_back(13);
-	auto it = list.rbegin();
-	EXPECT_EQ(13, *it);
-}
-
-TEST_F(singly_linked_list_test, backwardIteratorAdvance) {
-	list.push_back(42);
-	list.push_back(1963);
-	list.push_back(13);
-	auto it = list.rbegin();
-	EXPECT_EQ(13, *it);
-	--it;
-	EXPECT_EQ(1963, *it);
-	--it;
-	EXPECT_EQ(42, *it);
-}*/
