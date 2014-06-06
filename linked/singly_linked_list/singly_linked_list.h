@@ -190,7 +190,7 @@ public:
 	}
 
 	iterator end() {
-		return {0};
+		return {nullptr};
 	}
 
 	using const_iterator = iterator_base<const T>;
@@ -200,7 +200,7 @@ public:
 	}
 
 	const_iterator end() const {
-		return {0};
+		return {nullptr};
 	}
 
 	self& operator=(self rhs) {
@@ -221,8 +221,8 @@ private:
 			throw std::out_of_range("Empty list.");
 	}
 
-	node* _head { };
-	int _size { };
+	node* _head { nullptr };
+	int _size { 0 };
 
 };
 
