@@ -17,50 +17,48 @@ namespace trees {
 template<typename T>
 class binary_search_tree {
 	struct node {
-		node(const T& info) :
-				_item(info) {
+		node(const T& item) :
+				_item(item) {
 		}
 
-		friend std::ostream& operator<<(std::ostream& out, const node& node) {
-			out << '(';
-			if (node._left) {
-				out << *(node._left) << ',';
-			}
-			out << node._item;
-			if (node._right) {
-				out << ',' << *(node._right);
-			}
-			out << ')';
-			return out;
+		operator std::string() const {
+			std::stringstream ss;
+			if (_left != nullptr || _right != nullptr)
+				ss << '(';
+			if (_left != nullptr)
+				ss << (std::string) *_left << ',';
+			ss << _item;
+			if (_right != nullptr)
+				ss << ',' << (std::string) *_right;
+			if (_left != nullptr || _right != nullptr)
+				ss << ')';
+			return ss.str();
 		}
 
-		node* _left = 0;
-		node* _right = 0;
+		node* _left { nullptr };
+		node* _right { nullptr };
 		T _item;
 	};
 
-	node*& find_leftmost(node*& root) {
+	node* find_leftmost(node*& root) {
 		node* curr = root;
-		while (curr->_left) {
+		while (curr->_left)
 			curr = curr->_left;
-		}
 		return curr;
 	}
 
 	node* find(node*& root, const T& item) {
-		if (!root)
-			return nullptr;
+		if (root == nullptr || item == root->_item)
+			return root;
 		if (item < root->_item)
 			return find(root->_left, item);
 		if (item > root->_item)
 			return find(root->_right, item);
-		if (item == root->_item)
-			return root;
 		throw std::out_of_range("Searching non-existent element.");
 	}
 
 	void insert(node*& root, const T& item) {
-		if (!root) {
+		if (root == nullptr) {
 			root = new node(item);
 		} else {
 			if (item < root->_item) {
@@ -74,7 +72,7 @@ class binary_search_tree {
 	}
 
 	node* remove(node*& root, const T& item) {
-		if (!root)
+		if (root == nullptr)
 			return root;
 		if (item < root->_item) {
 			root->_left = remove(root->_left, item);
@@ -98,15 +96,12 @@ class binary_search_tree {
 		return 0;
 	}
 
-	node* root = 0;
-
 public:
 	binary_search_tree() {
-
 	}
 
 	bool empty() const {
-		return root == 0;
+		return root == nullptr;
 	}
 
 	bool find(const T& item) {
@@ -114,28 +109,20 @@ public:
 	}
 
 	void pop(const T& item) {
-		remove(root, item);
+		root = remove(root, item);
 	}
 
 	void push(const T& item) {
 		insert(root, item);
 	}
 
-	friend std::ostream& operator<<(std::ostream& out,
-			const binary_search_tree& bst) {
-		out << '(';
-		if (bst.root->_left) {
-			out << *(bst.root->_left) << ',';
-		}
-		out << bst.root->item;
-		if (bst.root->_right) {
-			out << ',' << *(bst.root->_right);
-		}
-		out << ')';
-		return out;
+	operator std::string() const {
+		return (std::string) (*root);
 	}
-}
-;
+
+private:
+	node* root { nullptr };
+};
 
 }
 }

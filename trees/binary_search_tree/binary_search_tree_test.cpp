@@ -17,5 +17,19 @@ public:
 
 TEST_F(binary_search_tree_test, pushPushes) {
 	tree.push(42);
-	tree.find(42);
+	EXPECT_TRUE(tree.find(42));
+}
+
+TEST_F(binary_search_tree_test, popPops) {
+	tree.push(42);
+	tree.pop(42);
+	EXPECT_FALSE(tree.find(42));
+}
+
+TEST_F(binary_search_tree_test, insertionsAreBalancedAsExpected) {
+	tree.push(42);
+	tree.push(1963);
+	tree.push(13);
+	tree.push(22);
+	EXPECT_STREQ("((13,22),42,1963)", ((std::string)tree).c_str());
 }
