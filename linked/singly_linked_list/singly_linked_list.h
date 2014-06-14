@@ -69,31 +69,32 @@ private:
 
 	using parent = list<T>;
 	using self = singly_linked_list<T>;
+	using size_type = std::size_t;
 
 public:
 	singly_linked_list() :
-			_head(), _size() {
+			_front(), _size() {
 	}
 
-	singly_linked_list(const parent& other) {
+	singly_linked_list(const self& other) {
 		for (auto e : other)
 			push_back(e);
 	}
 
 	~singly_linked_list() {
 		node* old;
-		while (_head) {
-			old = _head;
-			_head = _head->_succ;
+		while (_front) {
+			old = _front;
+			_front = _front->_succ;
 			delete old;
 		}
 	}
 
-	T at(int position) const {
+	T at(size_type position) const {
 		if (position < 0 || position >= this->_size)
 			throw std::out_of_range("Out of range access.");
 
-		node* p = _head;
+		node* p = _front;
 		for (int i = 0; i < position; ++i)
 			p = p->_succ;
 		return p->_item;
@@ -102,7 +103,7 @@ public:
 	T back() const {
 		empty_check();
 
-		node* p = _head;
+		node* p = _front;
 		while (p->_succ != 0)
 			p = p->_succ;
 		return p->_item;
@@ -111,22 +112,22 @@ public:
 	T front() const {
 		empty_check();
 
-		return _head->_item;
+		return _front->_item;
 	}
 
-	int size() const {
+	size_type size() const {
 		return this->_size;
 	}
 
 	/**< Removal operations */
-	T pop(int position) {
+	T pop(size_type position) {
 		if (position < 0 || position >= this->_size)
 			throw std::out_of_range("Empty list.");
 
 		if (position == 0)
 			return pop_front();
 
-		node* p = _head;
+		node* p = _front;
 		for (int i = 1; i < position; ++i)
 			p = p->_succ;
 
@@ -148,9 +149,9 @@ public:
 		empty_check();
 
 		/**< Hold head, advance it and then delete the old one */
-		node* aux = _head;
+		node* aux = _front;
 		T value(aux->_item);
-		_head = aux->_succ;
+		_front = aux->_succ;
 		delete aux;
 
 		--this->_size;
@@ -158,7 +159,7 @@ public:
 	}
 
 	/**< Insertion operations */
-	void push(int position, const T& item) {
+	void push(size_type position, const T& item) {
 		if (position < 0 || position > this->_size)
 			throw std::out_of_range("Out of range access.");
 
@@ -167,7 +168,7 @@ public:
 			return;
 		}
 
-		node* p = _head;
+		node* p = _front;
 		for (int i = 1; i < position; ++i)
 			p = p->_succ;
 		p->_succ = new node(p->_succ, item);
@@ -179,14 +180,14 @@ public:
 	}
 
 	void push_front(const T& value) {
-		_head = new node(_head, value);
+		_front = new node(_front, value);
 		++this->_size;
 	}
 
 	using iterator = iterator_base<T>;
 
 	iterator begin() {
-		return {_head};
+		return {_front};
 	}
 
 	iterator end() {
@@ -196,22 +197,37 @@ public:
 	using const_iterator = iterator_base<const T>;
 
 	const_iterator begin() const {
-		return {_head};
+		return {_front};
 	}
 
 	const_iterator end() const {
 		return {nullptr};
 	}
 
-	self& operator=(self rhs) {
+	self& operator=(self&& rhs) {
 		swap(*this, rhs);
 		return *this;
+	}
+
+	bool operator==(const self& rhs) const {
+		if (_size == rhs._size) {
+			for (const_iterator a = begin(), b = rhs.begin();
+					a != end(), b != rhs.end(); ++a, ++b)
+				if (*a != *b)
+					return false;
+			return true;
+		}
+		return false;
+	}
+
+	bool operator!=(const self& rhs) const {
+		return !(*this == rhs);
 	}
 
 	friend void swap(self& a, self& b) {
 		using std::swap;
 
-		swap(a._head, b._head);
+		swap(a._front, b._front);
 		swap(a._size, b._size);
 	}
 
@@ -221,8 +237,8 @@ private:
 			throw std::out_of_range("Empty list.");
 	}
 
-	node* _head { nullptr };
-	int _size { 0 };
+	node* _front { nullptr };
+	size_type _size { 0 };
 
 };
 
