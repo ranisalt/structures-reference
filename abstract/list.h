@@ -9,22 +9,24 @@ protected:
 	template<typename NodeT>
 	class iterator_base;
 
+	using size_type = std::size_t;
+
 public:
 	virtual ~list() {};
 
-	virtual T at(int) const = 0;
+	virtual T at(size_type) const = 0;
 	virtual T back() const = 0;
 	virtual T front() const = 0;
 
-	virtual int size() const = 0;
+	virtual size_type size() const = 0;
 
 	/**< Removal operations */
-	virtual T pop(int) = 0;
+	virtual T pop(size_type) = 0;
 	virtual T pop_back() = 0;
 	virtual T pop_front() = 0;
 
 	/**< Insertion operations */
-	virtual void push(int, const T&) = 0;
+	virtual void push(size_type, const T&) = 0;
 	virtual void push_back(const T&) = 0;
 	virtual void push_front(const T&) = 0;
 
