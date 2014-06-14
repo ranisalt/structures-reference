@@ -91,6 +91,28 @@ TEST_F(singly_linked_list_test, removalsFromEmptyThrow) {
 	EXPECT_THROW(list.pop(13), std::out_of_range);
 }
 
+TEST_F(singly_linked_list_test, equalOperatorIsCorrect) {
+	list.push_back(42);
+	list.push_back(1963);
+	list.push_back(13);
+
+	auto other = singly_linked_list<int> { };
+	other.push_back(42);
+	other.push_back(1963);
+	other.push_back(13);
+
+	EXPECT_EQ(list, other);
+}
+
+TEST_F(singly_linked_list_test, copyConstructIsCreatedCorrect) {
+	list.push_back(42);
+	list.push_back(1963);
+	list.push_back(13);
+
+	auto copy = singly_linked_list<int> { list };
+	EXPECT_EQ(list, copy);
+}
+
 TEST_F(singly_linked_list_test, forwardIteratorIsCreatedCorrect) {
 	list.push_back(42);
 	list.push_back(1963);
@@ -109,4 +131,6 @@ TEST_F(singly_linked_list_test, forwardIteratorAdvance) {
 	EXPECT_EQ(1963, *it);
 	++it;
 	EXPECT_EQ(13, *it);
+	++it;
+	EXPECT_EQ(list.end(), it);
 }
