@@ -38,5 +38,46 @@ TEST_F(binary_search_tree_test, insertionsAreBalancedAsExpected) {
 	tree.push(1963);
 	tree.push(13);
 	tree.push(22);
-	EXPECT_STREQ("((13,22),42,1963)", ((std::string)tree).c_str());
+
+	doubly_linked_list<int> list;
+	list.push_back(13);
+	list.push_back(22);
+	list.push_back(42);
+	list.push_back(1963);
+
+	EXPECT_EQ(list, tree.in_order());
+}
+
+TEST_F(binary_search_tree_test, inOrderReturnsOrderedCollection) {
+	// TODO: how would this test be different from the above?
+}
+
+TEST_F(binary_search_tree_test, preOrderReturnsPreOrderedCollection) {
+	tree.push(42);
+	tree.push(1963);
+	tree.push(13);
+	tree.push(22);
+
+	doubly_linked_list<int> list;
+	list.push_back(42);
+	list.push_back(13);
+	list.push_back(22);
+	list.push_back(1963);
+
+	EXPECT_EQ(list, tree.pre_order());
+}
+
+TEST_F(binary_search_tree_test, postOrderReturnsPostOrderedCollection) {
+	tree.push(42);
+	tree.push(1963);
+	tree.push(13);
+	tree.push(22);
+
+	doubly_linked_list<int> list;
+	list.push_back(22);
+	list.push_back(13);
+	list.push_back(1963);
+	list.push_back(42);
+
+	EXPECT_EQ(list, tree.post_order());
 }

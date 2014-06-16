@@ -115,6 +115,24 @@ class binary_search_tree {
 		in_order(root->_right, container);
 	}
 
+	void pre_order(node* const& root, Container<T>& container) const {
+		if (root == nullptr)
+			return;
+
+		container.push_back(root->_item);
+		pre_order(root->_left, container);
+		pre_order(root->_right, container);
+	}
+
+	void post_order(node* const& root, Container<T>& container) const {
+		if (root == nullptr)
+			return;
+
+		post_order(root->_left, container);
+		post_order(root->_right, container);
+		container.push_back(root->_item);
+	}
+
 public:
 	binary_search_tree() {
 	}
@@ -142,6 +160,18 @@ public:
 	Container<T> in_order() const {
 		Container<T> container;
 		in_order(root, container);
+		return container;
+	}
+
+	Container<T> pre_order() const {
+		Container<T> container;
+		pre_order(root, container);
+		return container;
+	}
+	
+	Container<T> post_order() const {
+		Container<T> container;
+		post_order(root, container);
 		return container;
 	}
 
