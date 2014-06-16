@@ -10,12 +10,15 @@
 
 #include <ostream>
 #include <stdexcept>
+#include "linked/doubly_linked_list/doubly_linked_list.h"
 
 namespace data_structures {
 namespace trees {
 
-template<typename T>
+template<typename T, template<typename> class Container = linked::doubly_linked_list>
 class binary_search_tree {
+	using size_type = std::size_t;
+
 	struct node {
 		node(const T& item) :
 				_item(item) {
@@ -40,6 +43,10 @@ class binary_search_tree {
 		T _item;
 	};
 
+	size_type size(const node*& root) const {
+		return root == nullptr ? 0 : 1 + size(root->_left) + size(root->_right);
+	}
+
 	node* find_leftmost(node*& root) {
 		node* curr = root;
 		while (curr->_left)
@@ -47,14 +54,17 @@ class binary_search_tree {
 		return curr;
 	}
 
-	node* find(node*& root, const T& item) {
-		if (root == nullptr || item == root->_item)
-			return root;
+	bool has(node* const& root, const T& item) const {
+		if (root == nullptr)
+			return false;
+		if (item == root->_item)
+			return true;
 		if (item < root->_item)
-			return find(root->_left, item);
+			return has(root->_left, item);
 		if (item > root->_item)
-			return find(root->_right, item);
-		throw std::out_of_range("Searching non-existent element.");
+			return has(root->_right, item);
+		return false;
+		//throw std::out_of_range("Searching non-existent element.");
 	}
 
 	void insert(node*& root, const T& item) {
@@ -96,6 +106,15 @@ class binary_search_tree {
 		return 0;
 	}
 
+	void in_order(node* const& root, Container<T>& container) const {
+		if (root == nullptr)
+			return;
+
+		in_order(root->_left, container);
+		container.push_back(root->_item);
+		in_order(root->_right, container);
+	}
+
 public:
 	binary_search_tree() {
 	}
@@ -104,8 +123,12 @@ public:
 		return root == nullptr;
 	}
 
-	bool find(const T& item) {
-		return find(root, item) != nullptr;
+	size_type size() const {
+		return size(root);
+	}
+
+	bool has(const T& item) const {
+		return has(root, item);
 	}
 
 	void pop(const T& item) {
@@ -114,6 +137,12 @@ public:
 
 	void push(const T& item) {
 		insert(root, item);
+	}
+
+	Container<T> in_order() const {
+		Container<T> container;
+		in_order(root, container);
+		return container;
 	}
 
 	operator std::string() const {

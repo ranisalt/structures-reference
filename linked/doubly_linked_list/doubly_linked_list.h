@@ -302,7 +302,7 @@ public:
 	bool operator==(const self& rhs) const {
 		if (_size == rhs.size()) {
 			for (const_iterator a = begin(), b = rhs.begin();
-					a != end(), b != rhs.end(); ++a, ++b)
+					a != end() && b != rhs.end(); ++a, ++b)
 				if (*a != *b)
 					return false;
 			return true;
