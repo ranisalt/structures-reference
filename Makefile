@@ -11,7 +11,7 @@ all:: test
 test::
 	@mkdir -p build
 	$(CXX) $(CXXFLAGS) -o $(EXEC) $(TEST_SRC)
-	@./build/test
+	@valgrind --leak-check=full ./$(EXEC)
 
 clean::
 	$(RM) -rf build/*
