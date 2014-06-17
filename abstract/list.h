@@ -1,49 +1,46 @@
 #ifndef LIST_H_
 #define LIST_H_
 
-#include <stdexcept>
-
-namespace data_structures {
-namespace abstract {
+namespace data_structures { namespace abstract {
 
 template<typename T>
 class list {
-public:
-	/**< Destructor is trivial, we only have _length */
-	virtual ~list() {}
+protected:
+	template<typename NodeT>
+	class iterator_base;
 
+	using size_type = std::size_t;
+
+public:
+	virtual ~list() {};
+
+	virtual T at(size_type) const = 0;
 	virtual T back() const = 0;
 	virtual T front() const = 0;
 
-	int length() const {
-		return _length;
-	}
+	virtual size_type size() const = 0;
 
 	/**< Removal operations */
-	virtual T pop(int) = 0;
+	virtual T pop(size_type) = 0;
 	virtual T pop_back() = 0;
 	virtual T pop_front() = 0;
 
 	/**< Insertion operations */
-	virtual void push(int, const T&) = 0;
+	virtual void push(size_type, const T&) = 0;
 	virtual void push_back(const T&) = 0;
 	virtual void push_front(const T&) = 0;
 
-	class iterator;
-	class const_iterator;
+	/**< Mutable iterator definition */
+	using iterator = iterator_base<T>;
+	iterator begin();
+	iterator end();
 
-protected:
-	class iterator_base;
-
-	void empty_check() const {
-		if (!_length)
-			throw std::out_of_range("Empty list.");
-	}
-
-	int _length;
+	/**< Constant iterator definition */
+	using const_iterator = iterator_base<const T>;
+	const_iterator begin() const;
+	const_iterator end() const;
 };
 
-}
-}
+}}
 
 #endif /* LIST_H_ */
