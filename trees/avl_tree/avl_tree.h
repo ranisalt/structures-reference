@@ -85,17 +85,17 @@ private:
 
 	void rotate_left(node*& root) {
 		node* aux;
-		aux = root->_left;
-		root->_left = aux->_right;
-		aux->_right = root;
+		aux = root->_right;
+		root->_right = aux->_left;
+		aux->_left = root;
 		root = aux;
 	}
 
 	void rotate_right(node*& root) {
 		node* aux;
-		aux = root->_right;
-		root->_right = aux->_left;
-		aux->_left = root;
+		aux = root->_left;
+		root->_left = aux->_right;
+		aux->_right = root;
 		root = aux;
 	}
 
