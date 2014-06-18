@@ -180,7 +180,7 @@ public:
 		empty_check();
 
 		node* aux = _back;
-		T item{_back->_item}
+		T item{_back->_item};
 		_back = _back->_pred;
 		if (_back == nullptr) {
 			_front = nullptr;
@@ -236,7 +236,7 @@ public:
 			for (int i = _size - 1; i > position; --i)
 				p = p->_pred;
 		}
-		p->_pred->_succ = p->_pred = new node(p->_pred, p, item);
+		p->_pred = p->_pred->_succ = new node(p->_pred, p, item);
 		++this->_size;
 	}
 
