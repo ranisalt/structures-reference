@@ -22,11 +22,6 @@ private:
 				_height(1), _left(nullptr), _right(nullptr), _item(item) {
 		}
 
-		~node() {
-			delete _left;
-			delete _right;
-		}
-
 		size_type _height;
 		node* _left;
 		node* _right;
@@ -52,15 +47,9 @@ private:
 		return (root == nullptr) ? 0 : root->_height;
 	}
 
-	size_type size(node* root) const {
-		return (root == nullptr) ?
-				0 : 1 + size(root->_left) + size(root->_right);
-	}
-
 	node* insert(node* root, const T& item) {
 		if (root == nullptr)
 			return root = new node(item);
-		/** node item > new item */
 		else if (root->_item > item) {
 			root->_left = insert(root->_left, item);
 			if (factor(root) == 2) {
@@ -75,9 +64,8 @@ private:
 					rotate_right(root->_right);
 				rotate_left(root);
 			}
-		} else {
+		} else
 			throw std::exception();
-		}
 		root->_height = std::max(height(root->_left), height(root->_right)) + 1;
 
 		return root;
@@ -99,6 +87,55 @@ private:
 		root = aux;
 	}
 
+	node* remove(node* root, const T& item) {
+		if (root == nullptr)
+			throw std::exception();
+		else if (root->_item > item) {
+			root->_left = remove(root->_left, item);
+			if (factor(root) == 2) {
+				if (factor(root->_left) == -1)
+					rotate_left(root->_left);
+				rotate_right(root);
+			}
+		} else if (root->_item < item) {
+			root->_right = remove(root->_right, item);
+			if (factor(root) == -2) {
+				if (factor(root->_right) == 1)
+					rotate_right(root->_right);
+				rotate_left(root);
+			}
+		} else {
+			if (root->_left == nullptr && root->_right == nullptr) {
+				delete root;
+				return nullptr;
+			}
+
+			// If there is right child
+			if (root->_left == nullptr) {
+				node* aux = root->_right;
+				delete root;
+				return aux;
+			}
+
+			// If there is left child
+			if (root->_right == nullptr) {
+				node* aux = root->_left;
+				delete root;
+				return aux;
+			}
+
+			// If there are both children
+			node* aux = root->_right;
+			while (aux->_left != nullptr) {
+				aux = aux->_left;
+			}
+			std::swap(root->_item, aux->_item);
+			root->_right = remove(root->_right, item);
+		}
+		root->_height = std::max(height(root->_left), height(root->_right)) + 1;
+		return root;
+	}
+
 	void in_order(node* root, Container<T>& container) const {
 		if (root != nullptr) {
 			in_order(root->_left, container);
@@ -110,26 +147,47 @@ private:
 	void pre_order(node* root, Container<T>& container) const {
 		if (root != nullptr) {
 			container.push_back(root->_item);
-			in_order(root->_left, container);
-			in_order(root->_right, container);
+			pre_order(root->_left, container);
+			pre_order(root->_right, container);
 		}
 	}
 
 	void post_order(node* root, Container<T>& container) const {
 		if (root != nullptr) {
-			in_order(root->_left, container);
-			in_order(root->_right, container);
+			post_order(root->_left, container);
+			post_order(root->_right, container);
 			container.push_back(root->_item);
 		}
 	}
 
+	node* recursive_copy(node* other_root) {
+		node* aux = new node(other_root->_item);
+		aux->_left = recursive_copy(other_root->_left);
+		aux->_right = recursive_copy(other_root->_right);
+		return aux;
+	}
+
+	void recursive_delete(node* root) {
+		if (root != nullptr) {
+			recursive_delete(root->_left);
+			recursive_delete(root->_right);
+			delete root;
+		}
+	}
+
+	using self = avl_tree<T>;
+
 public:
 	avl_tree() :
-			_root(nullptr) {
+			_size(0), _root(nullptr) {
+	}
+
+	avl_tree(const self& other) {
+		_root = recursive_copy(other.root);
 	}
 
 	~avl_tree() {
-		delete _root;
+		recursive_delete(_root);
 	}
 
 	bool has(const T& item) const {
@@ -137,14 +195,17 @@ public:
 	}
 
 	size_type size() const {
-		return size(_root);
+		return _size;
 	}
 
 	void insert(const T& item) {
 		_root = insert(_root, item);
+		++_size;
 	}
 
 	void remove(const T& item) {
+		_root = remove(_root, item);
+		--_size;
 	}
 
 	Container<T> in_order() const {
@@ -166,6 +227,7 @@ public:
 	}
 
 private:
+	size_type _size;
 	node* _root;
 };
 
