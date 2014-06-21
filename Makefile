@@ -1,5 +1,5 @@
 INCLUDE=$(shell pwd)
-TEST_SRC=$(shell find . -name '*.cpp')
+TEST_SRC=$(shell find . -name '*_test.cpp' | sort)
 
 CXX=clang++
 CXXFLAGS=-Wall -std=c++11 -I$(INCLUDE) -lgtest
