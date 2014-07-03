@@ -19,7 +19,10 @@ using abstract::list;
 
 template<typename T>
 class doubly_linked_list: public list<T> {
-private:
+	using parent = list<T>;
+	using self = doubly_linked_list<T>;
+	using size_type = std::size_t;
+
 	struct node {
 	public:
 		node(node* pred, node* succ, const T& item) :
@@ -38,8 +41,10 @@ private:
 				_ptr(ptr) {
 		}
 
-		iterator_base operator=(const iterator_base& other) {
-			return {other._ptr};
+		iterator_base operator=(iterator_base other) {
+			using std::swap;
+			swap(*this, other);
+			return *this;
 		}
 
 		iterator_base& operator++() {
@@ -50,9 +55,20 @@ private:
 		}
 
 		iterator_base operator++(int) {
-			node* old = _ptr;
+			auto old = _ptr;
 			++(*this);
 			return {old};
+		}
+
+		iterator_base& operator+=(int n) {
+			if   (n >= 0)	while (n--) ++(*this);
+			else          while (n++) --(*this);
+			return *this;
+		}
+
+		iterator_base operator+(int n) const {
+			auto copy = iterator_base{_ptr};
+			return copy += n;
 		}
 
 		iterator_base& operator--() {
@@ -66,6 +82,14 @@ private:
 			node* old = _ptr;
 			--(*this);
 			return {old};
+		}
+
+		iterator_base& operator-=(int n) {
+			return (*this) += (-n);
+		}
+
+		iterator_base operator-(int n) const {
+			return (*this) + (-n);
 		}
 
 		bool operator==(const iterator_base& other) const {
@@ -84,13 +108,14 @@ private:
 			return &(_ptr->_item);
 		}
 
+		void swap(iterator_base& other) {
+			using std::swap;
+			swap(_ptr, other._ptr);
+		}
+
 	private:
 		node* _ptr;
 	};
-
-	using parent = list<T>;
-	using self = doubly_linked_list<T>;
-	using size_type = std::size_t;
 
 public:
 	doubly_linked_list() :
@@ -314,12 +339,12 @@ public:
 		return !(*this == rhs);
 	}
 
-	friend void swap(self& a, self& b) {
+	void swap(self& rhs) {
 		using std::swap;
 
-		swap(a._front, b._front);
-		swap(a._back, b._back);
-		swap(a._size, b._size);
+		swap(_front, rhs._front);
+		swap(_back, rhs._back);
+		swap(_size, rhs._size);
 	}
 
 private:
