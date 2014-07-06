@@ -349,6 +349,30 @@ public:
 		return !(*this == rhs);
 	}
 
+	template<typename Compare = std::less_equal<T>>
+	void sort(iterator begin, iterator end, Compare cmp) {
+		if (begin != end) {
+			auto pivot = begin;
+			auto left = ++begin;
+			auto right = end;
+
+			while (left != right) {
+				if (cmp(*left, *pivot)) {
+					++left;
+				} else {
+					while (left != right && cmp(*pivot, *right)) {
+						--right;
+					}
+					std::swap(left, right);
+				}
+			}
+			--left;
+			std::swap(pivot, left);
+			std::sort<Compare>(begin, left, cmp);
+			std::sort<Compare>(right, end, cmp);
+		}
+	}
+
 	void swap(self& rhs) {
 		using std::swap;
 
