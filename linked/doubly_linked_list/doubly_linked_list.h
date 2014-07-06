@@ -9,6 +9,7 @@
 #define DOUBLY_LINKED_LIST_H_
 
 #include <algorithm>
+#include <iterator>
 #include <stdexcept>
 #include "abstract/list.h"
 
@@ -36,68 +37,75 @@ class doubly_linked_list: public list<T> {
 
 	template<typename NodeT>
 	class iterator_base {
+		using self = iterator_base<NodeT>;
+
 	public:
-		iterator_base(node* ptr) :
-				_ptr(ptr) {
+		iterator_base(node* ptr, size_type pos) :
+				_ptr(ptr), _pos(pos) {
 		}
 
-		iterator_base operator=(iterator_base other) {
+		self operator=(self other) {
 			using std::swap;
 			swap(*this, other);
 			return *this;
 		}
 
-		iterator_base& operator++() {
+		self& operator++() {
 			if (_ptr == nullptr)
 				throw std::out_of_range("Iterating beyond list end.");
 			_ptr = _ptr->_succ;
+			++_pos;
 			return *this;
 		}
 
-		iterator_base operator++(int) {
+		self operator++(int) {
 			auto old = _ptr;
 			++(*this);
 			return {old};
 		}
 
-		iterator_base& operator+=(int n) {
-			if   (n >= 0)	while (n--) ++(*this);
-			else          while (n++) --(*this);
-			return *this;
+		self next(size_type n = 1) {
+			self it{*this};
+			std::advance(it, n);
+			return it;
 		}
 
-		iterator_base operator+(int n) const {
-			auto copy = iterator_base{_ptr};
-			return copy += n;
+		self& advance(size_type n = 1) {
+			if (n > 0) {
+				while (n) {
+					++(*this);
+				}
+			} else {
+				while (n) {
+					--(*this);
+				}
+			}
 		}
 
-		iterator_base& operator--() {
+		self& operator--() {
 			if (_ptr == nullptr)
 				throw std::out_of_range("Iterating beyond list begin.");
 			_ptr = _ptr->_pred;
+			--_pos;
 			return *this;
 		}
 
-		iterator_base operator--(int) {
+		self operator--(int) {
 			node* old = _ptr;
 			--(*this);
 			return {old};
 		}
 
-		iterator_base& operator-=(int n) {
-			return (*this) += (-n);
+		bool operator==(const self& other) const {
+			return _pos == other._pos;
 		}
 
-		iterator_base operator-(int n) const {
-			return (*this) + (-n);
+		bool operator!=(const self& other) const {
+			return !(*this == other);
 		}
 
-		bool operator==(const iterator_base& other) const {
-			return _ptr == other._ptr;
-		}
-
-		bool operator!=(const iterator_base& other) const {
-			return _ptr != other._ptr;
+		bool operator<(const self& other) const {
+			return _pos < other._pos;
 		}
 
 		NodeT& operator*() const {
@@ -108,13 +116,15 @@ class doubly_linked_list: public list<T> {
 			return &(_ptr->_item);
 		}
 
-		void swap(iterator_base& other) {
+		void swap(self& other) {
 			using std::swap;
 			swap(_ptr, other._ptr);
+			swap(_pos, other._pos);
 		}
 
 	private:
 		node* _ptr;
+		size_type _pos;
 	};
 
 public:
@@ -286,37 +296,37 @@ public:
 	using iterator = iterator_base<T>;
 
 	iterator begin() {
-		return {_front};
+		return {_front, 1};
 	}
 
 	iterator end() {
-		return {nullptr};
+		return {nullptr, _size + 1};
 	}
 
 	iterator rbegin() {
-		return {_back};
+		return {_back, _size};
 	}
 
 	iterator rend() {
-		return {nullptr};
+		return {nullptr, 0};
 	}
 
 	using const_iterator = iterator_base<const T>;
 
 	const_iterator begin() const {
-		return {_front};
+		return {_front, 1};
 	}
 
 	const_iterator end() const {
-		return {nullptr};
+		return {nullptr, _size + 1};
 	}
 
 	const_iterator rbegin() const {
-		return {_back};
+		return {_back, _size};
 	}
 
 	const_iterator rend() const {
-		return {nullptr};
+		return {nullptr, 0};
 	}
 
 	self& operator=(self&& rhs) {
