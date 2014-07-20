@@ -13,6 +13,7 @@
  */
 
 #include <algorithm>
+#include <iterator>
 #include <gtest/gtest.h>
 #include "doubly_linked_list.h"
 

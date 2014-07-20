@@ -127,11 +127,11 @@ public:
 		node* p;
 		if (position < (_size >> 1)) {
 			p = _front;
-			for (int i = 0; i < position; ++i)
+			for (size_type i = 0; i < position; ++i)
 				p = p->_succ;
 		} else {
 			p = _back;
-			for (int i = _size - 1; i > position; --i)
+			for (size_type i = _size - 1; i > position; --i)
 				p = p->_pred;
 		}
 		return p->_item;
@@ -167,11 +167,11 @@ public:
 		node* p;
 		if (position < (_size >> 1)) {
 			p = _front;
-			for (int i = 0; i < position; ++i)
+			for (size_type i = 0; i < position; ++i)
 				p = p->_succ;
 		} else {
 			p = _back;
-			for (int i = _size - 1; i > position; --i)
+			for (size_type i = _size - 1; i > position; --i)
 				p = p->_pred;
 		}
 
@@ -316,6 +316,8 @@ public:
 		rhs._front = nullptr;
 		rhs._back = nullptr;
 		rhs._size = 0;
+
+		return *this;
 	}
 
 	friend bool operator==(const self& lhs, const self& rhs) {
@@ -340,36 +342,49 @@ public:
 		swap(a._size, b._size);
 	}
 	
-	template<typename Iterator, typename Compare = std::less<T>>
-	void sort(Iterator begin, Iterator end, Compare cmp = Compare()) {
+private:
+	template<typename Compare>
+	iterator partition(iterator begin, iterator end, Compare cmp) {
 		using std::distance;
 		using std::next;
 		using std::prev;
 		using std::swap;
-		
-		auto dist = distance(begin, end);
-		if (dist > 0) {
-			/* find pivot */
-			iterator pivot = next(begin, dist >> 1);
-			
-			/* partition */
-			swap(pivot, begin);
-			auto i = next(begin), j = next(begin);
-			
-			while (j != end) {
-				if (cmp(*j, *begin)) {
-					swap(*i, *j);
-					++i;
-				}
-				++j;
+
+		auto pivot = begin;
+		auto i = next(begin), j = prev(end);
+
+		while (distance(begin, end) > 0) {
+			while (*i < *pivot && i != end) {
+				++i;
 			}
-			
-			pivot = prev(i);
-			
-			/* sort slices */
+			while (*j >= *pivot) {
+				--j;
+			}
+			if (distance(begin, end) > 0) {
+				swap(*i, *j);
+			}
+		}
+		swap(*pivot, *j);
+
+		return j;
+	}
+
+public:
+	template<typename Compare>
+	void sort(iterator begin, iterator end, Compare cmp) {
+		using std::distance;
+		using std::next;
+		using std::prev;
+
+		if (distance(begin, end) > 0) {
+			auto pivot = partition(begin, end, cmp);
 			sort(begin, prev(pivot), cmp);
 			sort(next(pivot), end, cmp);
 		}
+	}
+
+	void sort(iterator begin, iterator end) {
+		sort(begin, end,  std::less_equal<T>());
 	}
 
 private:
