@@ -12,6 +12,7 @@
  *      Author: ranieri
  */
 
+#include <algorithm>
 #include <gtest/gtest.h>
 #include "doubly_linked_list.h"
 
@@ -98,7 +99,7 @@ TEST_F(doubly_linked_list_test, removalsFromEmptyThrow) {
 	EXPECT_THROW(list.pop(13), std::out_of_range);
 }
 
-TEST_F(doubly_linked_list_test, equalOperatorIsCorrect) {
+TEST_F(doubly_linked_list_test, equalLvalueOperatorIsCorrect) {
 	list.push_back(42);
 	list.push_back(1963);
 	list.push_back(13);
@@ -111,6 +112,20 @@ TEST_F(doubly_linked_list_test, equalOperatorIsCorrect) {
 	EXPECT_EQ(list, other);
 }
 
+TEST_F(doubly_linked_list_test, equalRvalueOperatorIsCorrect) {
+	list.push_back(42);
+	list.push_back(1963);
+	list.push_back(13);
+
+	auto other = std::move(list);
+
+	EXPECT_EQ(0, list.size());
+	EXPECT_EQ(3, other.size());
+	EXPECT_EQ(42, other.at(0));
+	EXPECT_EQ(1963, other.at(1));
+	EXPECT_EQ(13, other.at(2));
+}
+
 TEST_F(doubly_linked_list_test, copyConstructIsCreatedCorrect) {
 	list.push_back(42);
 	list.push_back(1963);
@@ -118,6 +133,15 @@ TEST_F(doubly_linked_list_test, copyConstructIsCreatedCorrect) {
 
 	auto copy = doubly_linked_list<int> { list };
 	EXPECT_EQ(list, copy);
+}
+
+TEST_F(doubly_linked_list_test, moveConstructIsCreatedCorrect) {
+	list.push_back(42);
+	list.push_back(1963);
+	list.push_back(13);
+
+	auto move = std::move(doubly_linked_list<int> { list });
+	EXPECT_EQ(list, move);
 }
 
 TEST_F(doubly_linked_list_test, forwardIteratorIsCreatedCorrect) {
@@ -162,4 +186,18 @@ TEST_F(doubly_linked_list_test, backwardIteratorRegress) {
 	EXPECT_EQ(42, *it);
 	--it;
 	EXPECT_EQ(list.rend(), it);
+}
+
+TEST_F(doubly_linked_list_test, sortIsOrderedProperly) {
+	list.push_back(42);
+	list.push_back(1963);
+	list.push_back(13);
+	
+	list.sort(list.begin(), list.end());
+	
+	auto it = list.begin();
+	while (it != list.rend()) {
+		EXPECT_TRUE(*it < *(std::next(it)));
+		++it;
+	}
 }
