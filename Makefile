@@ -4,14 +4,13 @@ TEST_SRC=$(shell find . -name '*.cpp')
 CXX=clang++
 CXXFLAGS=-Wall -std=c++11 -I$(INCLUDE) -lgtest
 
-EXEC=build/test
+EXEC=test
 
 all:: test
 
 test::
-	@mkdir -p build
 	$(CXX) $(CXXFLAGS) -o $(EXEC) $(TEST_SRC)
-	@valgrind --leak-check=full ./$(EXEC)
+	./$(EXEC)
 
 clean::
-	$(RM) -rf build/*
+	$(RM) -rf $(EXEC)
