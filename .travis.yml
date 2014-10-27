@@ -1,0 +1,11 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+before_install:
+  - sudo apt-get update -qq && sudo apt-get install libgtest-dev -yqq
+  - cd /usr/src/gtest && sudo cmake . && sudo make && sudo mv -v libg* /usr/lib/; cd -
+script: make test
+branches:
+  only:
+    - master
