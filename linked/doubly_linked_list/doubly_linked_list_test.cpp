@@ -128,6 +128,19 @@ TEST_F(doubly_linked_list_test, copyConstructIsCreatedCorrect) {
 	EXPECT_EQ(list, copy);
 }
 
+TEST_F(doubly_linked_list_test, moveConstructIsCreatedCorrect) {
+	list.push_back(42);
+	list.push_back(1963);
+	list.push_back(13);
+
+	auto move = doubly_linked_list<int> { std::move(list) };
+	EXPECT_EQ(0, list.size());
+	EXPECT_EQ(42, move.at(0));
+	EXPECT_EQ(1963, move.at(1));
+	EXPECT_EQ(13, move.at(2));
+	EXPECT_EQ(3, move.size());
+}
+
 TEST_F(doubly_linked_list_test, constructByInitializerList) {
 	auto list = doubly_linked_list<int> { 42, 1963, 13 };
 	EXPECT_EQ(42, list.at(0));

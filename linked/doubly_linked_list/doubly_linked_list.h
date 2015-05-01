@@ -104,6 +104,10 @@ public:
 			push_back(e);
 	}
 
+	doubly_linked_list(self&& other) {
+		swap(*this, other);
+	}
+
 	doubly_linked_list(const init_list& items) {
 		for (auto e : items) {
 			push_back(e);
