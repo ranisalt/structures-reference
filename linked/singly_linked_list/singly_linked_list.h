@@ -95,7 +95,7 @@ public:
 			throw std::out_of_range("Out of range access.");
 
 		node* p = _front;
-		for (int i = 0; i < position; ++i)
+		for (size_type i = 0; i < position; ++i)
 			p = p->_succ;
 		return p->_item;
 	}
@@ -128,7 +128,7 @@ public:
 			return pop_front();
 
 		node* p = _front;
-		for (int i = 1; i < position; ++i)
+		for (size_type i = 1; i < position; ++i)
 			p = p->_succ;
 
 		/**< Hold node, advance it and then delete the old one */
@@ -169,7 +169,7 @@ public:
 		}
 
 		node* p = _front;
-		for (int i = 1; i < position; ++i)
+		for (size_type i = 1; i < position; ++i)
 			p = p->_succ;
 		p->_succ = new node(p->_succ, item);
 		++this->_size;

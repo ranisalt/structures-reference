@@ -118,11 +118,11 @@ public:
 		node* p;
 		if (position < (_size >> 1)) {
 			p = _front;
-			for (int i = 0; i < position; ++i)
+			for (size_type i = 0; i < position; ++i)
 				p = p->_succ;
 		} else {
 			p = _back;
-			for (int i = _size - 1; i > position; --i)
+			for (size_type i = _size - 1; i > position; --i)
 				p = p->_pred;
 		}
 		return p->_item;
@@ -158,11 +158,11 @@ public:
 		node* p;
 		if (position < (_size >> 1)) {
 			p = _front;
-			for (int i = 0; i < position; ++i)
+			for (size_type i = 0; i < position; ++i)
 				p = p->_succ;
 		} else {
 			p = _back;
-			for (int i = _size - 1; i > position; --i)
+			for (size_type i = _size - 1; i > position; --i)
 				p = p->_pred;
 		}
 
@@ -229,11 +229,11 @@ public:
 		node* p;
 		if (position < (_size >> 1)) {
 			p = _front;
-			for (int i = 0; i < position; ++i)
+			for (size_type i = 0; i < position; ++i)
 				p = p->_succ;
 		} else {
 			p = _back;
-			for (int i = _size - 1; i > position; --i)
+			for (size_type i = _size - 1; i > position; --i)
 				p = p->_pred;
 		}
 		p->_pred = p->_pred->_succ = new node(p->_pred, p, item);
