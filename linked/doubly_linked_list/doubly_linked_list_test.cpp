@@ -98,7 +98,7 @@ TEST_F(doubly_linked_list_test, removalsFromEmptyThrow) {
 	EXPECT_THROW(list.pop(13), std::out_of_range);
 }
 
-TEST_F(doubly_linked_list_test, equalOperatorIsCorrect) {
+TEST_F(doubly_linked_list_test, equalReferenceOperatorIsCorrect) {
 	list.push_back(42);
 	list.push_back(1963);
 	list.push_back(13);
