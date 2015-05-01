@@ -9,6 +9,7 @@
 #define DOUBLY_LINKED_LIST_H_
 
 #include <algorithm>
+#include <initializer_list>
 #include <stdexcept>
 #include "abstract/list.h"
 
@@ -88,6 +89,7 @@ private:
 		node* _ptr;
 	};
 
+	using init_list = std::initializer_list<T>;
 	using parent = list<T>;
 	using self = doubly_linked_list<T>;
 	using size_type = std::size_t;
@@ -100,6 +102,12 @@ public:
 	doubly_linked_list(const self& other) {
 		for (auto e : other)
 			push_back(e);
+	}
+
+	doubly_linked_list(const init_list& items) {
+		for (auto e : items) {
+			push_back(e);
+		}
 	}
 
 	~doubly_linked_list() {
@@ -302,6 +310,18 @@ public:
 	bool operator==(const self& rhs) const {
 		if (_size == rhs.size()) {
 			for (const_iterator a = begin(), b = rhs.begin();
+					a != end() && b != rhs.end(); ++a, ++b)
+				if (*a != *b)
+					return false;
+			return true;
+		}
+		return false;
+	}
+
+	bool operator==(const init_list& rhs) const {
+		if (_size == rhs.size()) {
+			// not sure about this auto, but tends to select const_iterator.
+			for (auto a = begin(), b = rhs.begin();
 					a != end() && b != rhs.end(); ++a, ++b)
 				if (*a != *b)
 					return false;

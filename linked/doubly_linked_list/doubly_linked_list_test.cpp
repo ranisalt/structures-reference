@@ -111,6 +111,14 @@ TEST_F(doubly_linked_list_test, equalOperatorIsCorrect) {
 	EXPECT_EQ(list, other);
 }
 
+TEST_F(doubly_linked_list_test, equalInitializerListOperatorIsCorrect) {
+	list.push_back(42);
+	list.push_back(1963);
+	list.push_back(13);
+
+	EXPECT_EQ(list, std::initializer_list<int>({ 42, 1963, 13 }));
+}
+
 TEST_F(doubly_linked_list_test, copyConstructIsCreatedCorrect) {
 	list.push_back(42);
 	list.push_back(1963);
@@ -118,6 +126,14 @@ TEST_F(doubly_linked_list_test, copyConstructIsCreatedCorrect) {
 
 	auto copy = doubly_linked_list<int> { list };
 	EXPECT_EQ(list, copy);
+}
+
+TEST_F(doubly_linked_list_test, constructByInitializerList) {
+	auto list = doubly_linked_list<int> { 42, 1963, 13 };
+	EXPECT_EQ(42, list.at(0));
+	EXPECT_EQ(1963, list.at(1));
+	EXPECT_EQ(13, list.at(2));
+	EXPECT_EQ(3, list.size());
 }
 
 TEST_F(doubly_linked_list_test, forwardIteratorIsCreatedCorrect) {
