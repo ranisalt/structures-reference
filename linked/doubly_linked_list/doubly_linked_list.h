@@ -167,7 +167,7 @@ public:
 		}
 
 		/**< Hold node, advance it and then delete the old one */
-		T value{p->_item};
+		T value = std::move(p->_item);
 		p->_pred->_succ = p->_succ;
 		p->_succ->_pred = p->_pred;
 		delete p;
@@ -180,7 +180,7 @@ public:
 		empty_check();
 
 		node* aux = _back;
-		T item{_back->_item};
+		T item = std::move(_back->_item);
 		_back = _back->_pred;
 		if (_back == nullptr) {
 			_front = nullptr;
@@ -198,7 +198,7 @@ public:
 
 		/**< Hold head, advance it and then delete the old one */
 		node* aux = _front;
-		T item(aux->_item);
+		T item = std::move(aux->_item);
 		_front = _front->_succ;
 		if (_front == nullptr) {
 			_back = nullptr;

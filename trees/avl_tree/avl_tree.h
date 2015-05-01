@@ -38,11 +38,11 @@ private:
 		return true;
 	}
 
-	size_type factor(node* root) const {
+	std::intmax_t factor(node* root) const {
 		return (root == nullptr) ? 0 : height(root->_left) - height(root->_right);
 	}
 
-	size_type height(node* root) const {
+	std::intmax_t height(node* root) const {
 		return (root == nullptr) ? 0 : root->_height;
 	}
 
