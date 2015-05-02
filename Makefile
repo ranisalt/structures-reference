@@ -8,7 +8,7 @@ EXEC=test
 all:: test
 
 test::
-	$(CXX) $(CXXFLAGS) -o $(EXEC) $(TEST_SRC)
+	$(CXX) $(CXXFLAGS) -O0 -g -o $(EXEC) $(TEST_SRC)
 	./$(EXEC)
 
 clean::
