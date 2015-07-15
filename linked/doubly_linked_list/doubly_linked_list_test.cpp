@@ -1,17 +1,3 @@
-/*
- * doubly_linked_list_test.cpp
- *
- *  Created on: 13/06/2014
- *      Author: ranieri
- */
-
-/*
- * singly_linked_list_test.cpp
- *
- *  Created on: 03/06/2014
- *      Author: ranieri
- */
-
 #include <gtest/gtest.h>
 #include "doubly_linked_list.h"
 
